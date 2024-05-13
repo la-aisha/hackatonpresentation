@@ -5,8 +5,66 @@ import 'package:terappmobile/models/response/trains_station_response.dart';
 import 'package:terappmobile/provider/train_provider.dart';
 import 'package:terappmobile/utils/app_colors.dart';
 import 'package:terappmobile/utils/title_option.dart';
-
 class WrappedChoiceChipStation extends StatelessWidget {
+  final List<TrainStationsResponse> choices;
+  final TrainStationsResponse? selectedChoice;
+  final ValueChanged<TrainStationsResponse>? onSelected;
+
+  WrappedChoiceChipStation({
+    required this.choices,
+    required this.selectedChoice,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8.0,
+      runSpacing: 4.0,
+      children: choices.map((choice) {
+        final isSelected = selectedChoice == choice;
+        return ChoiceChip(
+          disabledColor: Color.fromRGBO(242, 244, 247, 1),
+          showCheckmark: false,
+          label: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                isSelected
+                    ? 'images/picked.png'
+                    : 'images/locationnotpicked.png',
+              ),
+              SizedBox(
+                width: 4,
+              ),
+              Text(
+                choice.nom ?? '', // Assuming 'nom' is the station name
+                style: TextStyle(
+                  color: isSelected
+                      ? Colors.white
+                      : Color.fromRGBO(102, 112, 133, 1),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          selected: isSelected,
+          selectedColor: isSelected ? AppColors.marron : Colors.white,
+          onSelected: (_) {
+            if (onSelected != null) {
+              onSelected!(choice);
+            }
+          },
+        );
+      }).toList(),
+    );
+  }
+}
+
+
+/* class WrappedChoiceChipStation extends StatelessWidget {
   final List<TrainStationsResponse> choices;
   final TrainStationsResponse? selectedChoice;
   final ValueChanged<TrainStationsResponse>? onSelected;
@@ -81,7 +139,7 @@ class WrappedChoiceChipStation extends StatelessWidget {
     );
   }
 }
-
+ */
 /* 
 class WrappedChoiceChipStation extends StatelessWidget {
   final List<TrainStationsResponse> choices;

@@ -160,6 +160,42 @@ class _TrainVoyageState extends State<TrainVoyage> {
                       height: 20,
                     ),
                     Container(
+                     // height: 250,
+                      child: FutureBuilder<List<TrainStationsResponse>>(
+                        future: gareFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text('Error: ${snapshot.error}'),
+                            );
+                          } else {
+                            List<TrainStationsResponse> choices =
+                                snapshot.data!;
+                            TrainStationsResponse? selectedChoice =
+                                Provider.of<GareProvider>(context)
+                                    .selectedStation;
+
+                            return WrappedChoiceChipStation(
+                              choices: choices,
+                              selectedChoice: selectedChoice,
+                              onSelected: (TrainStationsResponse choice) {
+                                Provider.of<GareProvider>(context,
+                                        listen: false)
+                                    .setSelectedStation(choice);
+                                // Optionally, do something with the selected choice
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ),
+
+                    /* Container(
                       height: 250, // Adjust the height as needed
                       child: Flexible(
                         child: FutureBuilder<List<TrainStationsResponse>>(
@@ -221,319 +257,340 @@ class _TrainVoyageState extends State<TrainVoyage> {
                         ),
                       ),
                     ),
-                    const Divider(
-                      thickness: 1,
-                    ),
-                    TitleOption(
-                      data: 'Arrivée des prochains trains',
-                      color: AppColors.marron,
-                      size: 20,
-                      weight: FontWeight.w500,
-                      textAlign: TextAlign.right,
-                    ),
-                    Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: const Color.fromRGBO(234, 236, 240, 1))),
-                        //,color: Colors.blue,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 10),
-                        height: 360,
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Column(
-                                  children: [
-                                    CircleAvatar(
-                                      //radius: 90,
-                                      backgroundColor: const Color.fromRGBO(
-                                          152, 162, 179, 1),
-                                      child:
-                                          Image.asset('images/location4.png'),
-                                    ),
-                                    TitleOption(
-                                      data: (Provider.of<GareProvider>(context)
-                                                      .selectedStation ==
-                                                  null ||
-                                              Provider.of<GareProvider>(context)
-                                                      .selectedStation!
-                                                      .nom ==
-                                                  null)
-                                          ? 'dakar'
-                                          : removeGareDe(
-                                              Provider.of<GareProvider>(context)
-                                                  .selectedStation!
-                                                  .nom!),
-
-                                      // data: (Provider.of<GareProvider>(context).selectedStation!.nom! == Null ) ?  'dakar ' : removeGareDe(Provider.of<GareProvider>(context).selectedStation!.nom!),
-                                      color: const Color.fromRGBO(
-                                          102, 112, 133, 1),
-                                      size: 12,
-                                      weight: FontWeight.w500,
-                                    ),
-                                  ],
-                                ),
-                                Image.asset('images/vd.png'),
-                                Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 20,
-                                      backgroundColor: const Color.fromRGBO(
-                                          152, 162, 179, 1),
-                                      child:
-                                          Image.asset('images/location4.png'),
-                                    ),
-                                    TitleOption(
-                                      data: "Diamniadio",
-                                      color: const Color.fromRGBO(
-                                          102, 112, 133, 1),
-                                      size: 10,
-                                      weight: FontWeight.w500,
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TitleOption(
-                                  data: "Arrivé du prochain train",
-                                  color: const Color.fromRGBO(102, 112, 133, 1),
-                                  size: 12,
-                                  weight: FontWeight.w500,
-                                ),
-                                TitleOption(
-                                  data: "7mn",
-                                  color: AppColors.rouge,
-                                  size: 12,
-                                  weight: FontWeight.w500,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(4),
-                              height: 60,
-                              width: double.infinity,
-                              color: const Color.fromRGBO(242, 244, 247, 1),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      TitleOption(
-                                        data: "Prochaine destination",
-                                        color: const Color.fromRGBO(
-                                            102, 112, 133, 1),
-                                        size: 12,
-                                        weight: FontWeight.w500,
-                                      ),
-                                      TitleOption(
-                                        data: "Durée du trajet",
-                                        color: const Color.fromRGBO(
-                                            102, 112, 133, 1),
-                                        size: 12,
-                                        weight: FontWeight.w500,
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      TitleOption(
-                                        data: "Yeumbeul",
-                                        color: AppColors.marron,
-                                        size: 12,
-                                        weight: FontWeight.w500,
-                                      ),
-                                      TitleOption(
-                                        data: "10mn",
-                                        color:
-                                            const Color.fromRGBO(48, 183, 0, 1),
-                                        size: 12,
-                                        weight: FontWeight.w500,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Divider(
-                              thickness: 1,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Column(
-                                  children: [
-                                    CircleAvatar(
-                                      //radius: 90,
-                                      backgroundColor: const Color.fromRGBO(
-                                          152, 162, 179, 1),
-                                      child:
-                                          Image.asset('images/location4.png'),
-                                    ),
-                                    TitleOption(
-                                      data: "Dakar",
-                                      color: const Color.fromRGBO(
-                                          102, 112, 133, 1),
-                                      size: 12,
-                                      weight: FontWeight.w500,
-                                    ),
-                                  ],
-                                ),
-                                Image.asset('images/vg.png'),
-                                Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 20,
-                                      backgroundColor: const Color.fromRGBO(
-                                          152, 162, 179, 1),
-                                      child:
-                                          Image.asset('images/location4.png'),
-                                    ),
-                                    TitleOption(
-                                      data: (Provider.of<GareProvider>(context)
-                                                      .selectedStation ==
-                                                  null ||
-                                              Provider.of<GareProvider>(context)
-                                                      .selectedStation!
-                                                      .nom ==
-                                                  null)
-                                          ? 'Diamniadio'
-                                          : removeGareDe(
-                                              Provider.of<GareProvider>(context)
-                                                  .selectedStation!
-                                                  .nom!),
-
-                                      /*  data: removeGareDe(Provider.of<GareProvider>(context)
-                                      .selectedStation!.nom!), */
-                                      color: const Color.fromRGBO(
-                                          102, 112, 133, 1),
-                                      size: 8,
-                                      weight: FontWeight.w500,
-                                      maxLines: 2,
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TitleOption(
-                                  data: "Arrivé du prochain train",
-                                  color: const Color.fromRGBO(102, 112, 133, 1),
-                                  size: 12,
-                                  weight: FontWeight.w500,
-                                ),
-                                TitleOption(
-                                  data: "-3mn",
-                                  color: AppColors.rouge,
-                                  size: 12,
-                                  weight: FontWeight.w500,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(4),
-                              height: 60,
-                              width: double.infinity,
-                              color: const Color.fromRGBO(242, 244, 247, 1),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      TitleOption(
-                                        data: "Prochaine destination",
-                                        color: const Color.fromRGBO(
-                                            102, 112, 133, 1),
-                                        size: 12,
-                                        weight: FontWeight.w500,
-                                      ),
-                                      TitleOption(
-                                        data: "Durée du trajet",
-                                        color: const Color.fromRGBO(
-                                            102, 112, 133, 1),
-                                        size: 12,
-                                        weight: FontWeight.w500,
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      TitleOption(
-                                        data: "Yeumbeul",
-                                        color: AppColors.marron,
-                                        size: 12,
-                                        weight: FontWeight.w500,
-                                      ),
-                                      TitleOption(
-                                        data: "10mn",
-                                        color:
-                                            const Color.fromRGBO(48, 183, 0, 1),
-                                        size: 12,
-                                        weight: FontWeight.w500,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )),
-                    GestureDetector(
-                        onTap: () {
-                          /*  Provider.of<GareProvider>(context, listen: false)
-                              .setSelectedStation(trainStationsResponse);  */
-                          // Navigate to details screen
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => GareDetail()));
-                        },
-                        child: Container(
-                            height: 60,
+                     */
+                    Expanded(
+                      child : Column(children: [
+                         const Divider(
+                          thickness: 1,
+                        ),
+                        TitleOption(
+                          data: 'Arrivée des prochains trains',
+                          color: AppColors.marron,
+                          size: 20,
+                          weight: FontWeight.w500,
+                          textAlign: TextAlign.right,
+                        ),
+                        Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              color: AppColors.marron,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    'images/info.png',
-                                    height: 20,
+                                border: Border.all(
+                                    color: const Color.fromRGBO(
+                                        234, 236, 240, 1))),
+                            //,color: Colors.blue,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                            height: 360,
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        CircleAvatar(
+                                          //radius: 90,
+                                          backgroundColor: const Color.fromRGBO(
+                                              152, 162, 179, 1),
+                                          child: Image.asset(
+                                              'images/location4.png'),
+                                        ),
+                                        TitleOption(
+                                          data: (Provider.of<GareProvider>(
+                                                              context)
+                                                          .selectedStation ==
+                                                      null ||
+                                                  Provider.of<GareProvider>(
+                                                              context)
+                                                          .selectedStation!
+                                                          .nom ==
+                                                      null)
+                                              ? 'dakar'
+                                              : removeGareDe(
+                                                  Provider.of<GareProvider>(
+                                                          context)
+                                                      .selectedStation!
+                                                      .nom!),
+
+                                          // data: (Provider.of<GareProvider>(context).selectedStation!.nom! == Null ) ?  'dakar ' : removeGareDe(Provider.of<GareProvider>(context).selectedStation!.nom!),
+                                          color: const Color.fromRGBO(
+                                              102, 112, 133, 1),
+                                          size: 12,
+                                          weight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    ),
+                                    Image.asset('images/vd.png'),
+                                    Column(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 20,
+                                          backgroundColor: const Color.fromRGBO(
+                                              152, 162, 179, 1),
+                                          child: Image.asset(
+                                              'images/location4.png'),
+                                        ),
+                                        TitleOption(
+                                          data: "Diamniadio",
+                                          color: const Color.fromRGBO(
+                                              102, 112, 133, 1),
+                                          size: 10,
+                                          weight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TitleOption(
+                                      data: "Arrivé du prochain train",
+                                      color: const Color.fromRGBO(
+                                          102, 112, 133, 1),
+                                      size: 12,
+                                      weight: FontWeight.w500,
+                                    ),
+                                    TitleOption(
+                                      data: "7mn",
+                                      color: AppColors.rouge,
+                                      size: 12,
+                                      weight: FontWeight.w500,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(4),
+                                  height: 60,
+                                  width: double.infinity,
+                                  color: const Color.fromRGBO(242, 244, 247, 1),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TitleOption(
+                                            data: "Prochaine destination",
+                                            color: const Color.fromRGBO(
+                                                102, 112, 133, 1),
+                                            size: 12,
+                                            weight: FontWeight.w500,
+                                          ),
+                                          TitleOption(
+                                            data: "Durée du trajet",
+                                            color: const Color.fromRGBO(
+                                                102, 112, 133, 1),
+                                            size: 12,
+                                            weight: FontWeight.w500,
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TitleOption(
+                                            data: "Yeumbeul",
+                                            color: AppColors.marron,
+                                            size: 12,
+                                            weight: FontWeight.w500,
+                                          ),
+                                          TitleOption(
+                                            data: "10mn",
+                                            color: const Color.fromRGBO(
+                                                48, 183, 0, 1),
+                                            size: 12,
+                                            weight: FontWeight.w500,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(
-                                    width: 5,
+                                ),
+                                const Divider(
+                                  thickness: 1,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        CircleAvatar(
+                                          //radius: 90,
+                                          backgroundColor: const Color.fromRGBO(
+                                              152, 162, 179, 1),
+                                          child: Image.asset(
+                                              'images/location4.png'),
+                                        ),
+                                        TitleOption(
+                                          data: "Dakar",
+                                          color: const Color.fromRGBO(
+                                              102, 112, 133, 1),
+                                          size: 12,
+                                          weight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    ),
+                                    Image.asset('images/vg.png'),
+                                    Column(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 20,
+                                          backgroundColor: const Color.fromRGBO(
+                                              152, 162, 179, 1),
+                                          child: Image.asset(
+                                              'images/location4.png'),
+                                        ),
+                                        TitleOption(
+                                          data: (Provider.of<GareProvider>(
+                                                              context)
+                                                          .selectedStation ==
+                                                      null ||
+                                                  Provider.of<GareProvider>(
+                                                              context)
+                                                          .selectedStation!
+                                                          .nom ==
+                                                      null)
+                                              ? 'Diamniadio'
+                                              : removeGareDe(
+                                                  Provider.of<GareProvider>(
+                                                          context)
+                                                      .selectedStation!
+                                                      .nom!),
+
+                                          /*  data: removeGareDe(Provider.of<GareProvider>(context)
+                                      .selectedStation!.nom!), */
+                                          color: const Color.fromRGBO(
+                                              102, 112, 133, 1),
+                                          size: 8,
+                                          weight: FontWeight.w500,
+                                          maxLines: 2,
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TitleOption(
+                                      data: "Arrivé du prochain train",
+                                      color: const Color.fromRGBO(
+                                          102, 112, 133, 1),
+                                      size: 12,
+                                      weight: FontWeight.w500,
+                                    ),
+                                    TitleOption(
+                                      data: "-3mn",
+                                      color: AppColors.rouge,
+                                      size: 12,
+                                      weight: FontWeight.w500,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(4),
+                                  height: 60,
+                                  width: double.infinity,
+                                  color: const Color.fromRGBO(242, 244, 247, 1),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TitleOption(
+                                            data: "Prochaine destination",
+                                            color: const Color.fromRGBO(
+                                                102, 112, 133, 1),
+                                            size: 12,
+                                            weight: FontWeight.w500,
+                                          ),
+                                          TitleOption(
+                                            data: "Durée du trajet",
+                                            color: const Color.fromRGBO(
+                                                102, 112, 133, 1),
+                                            size: 12,
+                                            weight: FontWeight.w500,
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TitleOption(
+                                            data: "Yeumbeul",
+                                            color: AppColors.marron,
+                                            size: 12,
+                                            weight: FontWeight.w500,
+                                          ),
+                                          TitleOption(
+                                            data: "10mn",
+                                            color: const Color.fromRGBO(
+                                                48, 183, 0, 1),
+                                            size: 12,
+                                            weight: FontWeight.w500,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                  TitleOption(
-                                    data: "Plus d’informations sur la gare",
-                                    color: Colors.white,
-                                    size: 16,
-                                    weight: FontWeight.w500,
-                                  ),
-                                ])))
+                                ),
+                              ],
+                            )),
+                        GestureDetector(
+                            onTap: () {
+                              /*  Provider.of<GareProvider>(context, listen: false)
+                              .setSelectedStation(trainStationsResponse);  */
+                              // Navigate to details screen
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => GareDetail()));
+                            },
+                            child: Container(
+                                height: 60,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: AppColors.marron,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'images/info.png',
+                                        height: 20,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      TitleOption(
+                                        data: "Plus d’informations sur la gare",
+                                        color: Colors.white,
+                                        size: 16,
+                                        weight: FontWeight.w500,
+                                      ),
+                                    ])))
+
+                      ],)
+                    ) ,
+                   
                   ],
                 ),
               ),
