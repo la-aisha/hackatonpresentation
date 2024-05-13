@@ -18,6 +18,14 @@ class WrappedChoiceChipStation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String removeGareDe(String stationName) {
+      const prefix = 'Gare de ';
+      if (stationName.startsWith(prefix)) {
+        return stationName.substring(prefix.length).trim();
+      } else {
+        return stationName;
+      }
+    }
     return Wrap(
       spacing: 8.0,
       runSpacing: 4.0,
@@ -39,7 +47,8 @@ class WrappedChoiceChipStation extends StatelessWidget {
                 width: 4,
               ),
               Text(
-                choice.nom ?? '', // Assuming 'nom' is the station name
+               removeGareDe(choice!.nom!
+               )?? '', // Assuming 'nom' is the station name
                 style: TextStyle(
                   color: isSelected
                       ? Colors.white
